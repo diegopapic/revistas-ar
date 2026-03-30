@@ -44,10 +44,7 @@ export default function LoginPage() {
           required
           className="border rounded px-3 py-2"
         />
-        <button
-          type="submit"
-          className="bg-black text-white rounded px-3 py-2 hover:bg-gray-800"
-        >
+        <button type="submit" className="bg-black text-white rounded px-3 py-2 hover:bg-gray-800">
           Entrar
         </button>
       </form>
