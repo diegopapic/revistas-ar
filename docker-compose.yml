@@ -2,7 +2,14 @@ services:
   app:
     build: .
     ports:
-      - "3001:3000"
+      - "3002:3000"
     env_file:
       - .env
+    networks:
+      - cinenacional-network
     restart: unless-stopped
+
+networks:
+  cinenacional-network:
+    external: true
+    name: cinenacional_cinenacional-network
