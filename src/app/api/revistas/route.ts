@@ -12,8 +12,12 @@ export async function GET() {
     });
     return NextResponse.json(magazines);
   } catch (e) {
-    console.error("GET /api/revistas error:", e);
-    return NextResponse.json({ error: String(e) }, { status: 500 });
+    const err = e as Error & { code?: string; meta?: unknown };
+    console.error("GET /api/revistas error:", err);
+    return NextResponse.json(
+      { error: err.message, code: err.code, meta: err.meta },
+      { status: 500 },
+    );
   }
 }
 
@@ -47,7 +51,11 @@ export async function POST(req: NextRequest) {
 
     return NextResponse.json(magazine, { status: 201 });
   } catch (e) {
-    console.error("POST /api/revistas error:", e);
-    return NextResponse.json({ error: String(e) }, { status: 500 });
+    const err = e as Error & { code?: string; meta?: unknown };
+    console.error("POST /api/revistas error:", err);
+    return NextResponse.json(
+      { error: err.message, code: err.code, meta: err.meta },
+      { status: 500 },
+    );
   }
 }
