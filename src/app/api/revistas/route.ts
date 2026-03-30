@@ -1,12 +1,12 @@
 import { NextRequest, NextResponse } from "next/server";
-import { prisma as db } from "@/lib/db";
+import { getDb } from "@/lib/db";
 import slugify from "slugify";
 
 export const dynamic = "force-dynamic";
 
 export async function GET() {
   try {
-    const magazines = await db.magazine.findMany({
+    const magazines = await getDb().magazine.findMany({
       orderBy: { name: "asc" },
       include: { _count: { select: { articles: true, issues: true } } },
     });
@@ -28,12 +28,12 @@ export async function POST(req: NextRequest) {
 
     const slug = slugify(name, { lower: true, strict: true });
 
-    const existing = await db.magazine.findUnique({ where: { slug } });
+    const existing = await getDb().magazine.findUnique({ where: { slug } });
     if (existing) {
       return NextResponse.json({ error: "Ya existe una revista con ese nombre" }, { status: 409 });
     }
 
-    const magazine = await db.magazine.create({
+    const magazine = await getDb().magazine.create({
       data: {
         name: name.trim(),
         slug,

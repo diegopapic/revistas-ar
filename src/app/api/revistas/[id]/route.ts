@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from "next/server";
-import { prisma as db } from "@/lib/db";
+import { getDb } from "@/lib/db";
 import slugify from "slugify";
 
 export const dynamic = "force-dynamic";
@@ -8,7 +8,7 @@ type RouteContext = { params: Promise<{ id: string }> };
 
 export async function GET(_req: NextRequest, { params }: RouteContext) {
   const { id } = await params;
-  const magazine = await db.magazine.findUnique({
+  const magazine = await getDb().magazine.findUnique({
     where: { id: parseInt(id, 10) },
     include: { _count: { select: { articles: true, issues: true } } },
   });
@@ -27,14 +27,14 @@ export async function PUT(req: NextRequest, { params }: RouteContext) {
 
   const slug = slugify(name, { lower: true, strict: true });
 
-  const existing = await db.magazine.findFirst({
+  const existing = await getDb().magazine.findFirst({
     where: { slug, NOT: { id: parseInt(id, 10) } },
   });
   if (existing) {
     return NextResponse.json({ error: "Ya existe otra revista con ese nombre" }, { status: 409 });
   }
 
-  const magazine = await db.magazine.update({
+  const magazine = await getDb().magazine.update({
     where: { id: parseInt(id, 10) },
     data: {
       name: name.trim(),
@@ -54,7 +54,7 @@ export async function DELETE(_req: NextRequest, { params }: RouteContext) {
   const { id } = await params;
   const magazineId = parseInt(id, 10);
 
-  const articleCount = await db.article.count({ where: { magazineId } });
+  const articleCount = await getDb().article.count({ where: { magazineId } });
   if (articleCount > 0) {
     return NextResponse.json(
       { error: `No se puede eliminar: tiene ${articleCount} artículo(s) asociado(s)` },
@@ -62,7 +62,7 @@ export async function DELETE(_req: NextRequest, { params }: RouteContext) {
     );
   }
 
-  const issueCount = await db.issue.count({ where: { magazineId } });
+  const issueCount = await getDb().issue.count({ where: { magazineId } });
   if (issueCount > 0) {
     return NextResponse.json(
       { error: `No se puede eliminar: tiene ${issueCount} número(s) asociado(s)` },
@@ -70,6 +70,6 @@ export async function DELETE(_req: NextRequest, { params }: RouteContext) {
     );
   }
 
-  await db.magazine.delete({ where: { id: magazineId } });
+  await getDb().magazine.delete({ where: { id: magazineId } });
   return NextResponse.json({ ok: true });
 }
