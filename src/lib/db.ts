@@ -5,10 +5,16 @@ const globalForPrisma = globalThis as unknown as {
   prisma: ReturnType<typeof createPrisma> | undefined;
 };
 
+function isAccelerateUrl(url?: string) {
+  return url?.startsWith("prisma://") || url?.startsWith("prisma+postgres://");
+}
+
 function createPrisma() {
-  return new PrismaClient({
-    accelerateUrl: process.env.DATABASE_URL,
-  }).$extends(withAccelerate());
+  const url = process.env.DATABASE_URL;
+  if (isAccelerateUrl(url)) {
+    return new PrismaClient({ accelerateUrl: url }).$extends(withAccelerate());
+  }
+  return new PrismaClient().$extends(withAccelerate());
 }
 
 export function getDb() {
