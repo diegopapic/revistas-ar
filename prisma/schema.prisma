@@ -1,0 +1,102 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+}
+
+model Magazine {
+  id          Int       @id @default(autoincrement())
+  name        String
+  slug        String    @unique
+  description String?
+  editorial   String?
+  logoUrl     String?
+  foundedYear Int?
+  country     String?
+  issues      Issue[]
+  articles    Article[]
+  createdAt   DateTime  @default(now())
+  updatedAt   DateTime  @updatedAt
+}
+
+model Issue {
+  id          Int       @id @default(autoincrement())
+  magazineId  Int
+  magazine    Magazine  @relation(fields: [magazineId], references: [id])
+  number      Int?
+  title       String?
+  publishedAt DateTime?
+  coverUrl    String?
+  articles    Article[]
+  createdAt   DateTime  @default(now())
+  updatedAt   DateTime  @updatedAt
+}
+
+model Article {
+  id          Int              @id @default(autoincrement())
+  title       String
+  slug        String           @unique
+  content     String
+  excerpt     String?
+  magazineId  Int
+  magazine    Magazine         @relation(fields: [magazineId], references: [id])
+  issueId     Int?
+  issue       Issue?           @relation(fields: [issueId], references: [id])
+  sectionId   Int?
+  section     Section?         @relation(fields: [sectionId], references: [id])
+  publishedAt DateTime?
+  scannedUrl  String?
+  authors     ArticleAuthor[]
+  keywords    ArticleKeyword[]
+  createdAt   DateTime         @default(now())
+  updatedAt   DateTime         @updatedAt
+}
+
+model Author {
+  id         Int             @id @default(autoincrement())
+  name       String
+  slug       String          @unique
+  bio        String?
+  photoUrl   String?
+  birthDate  DateTime?
+  birthPlace String?
+  deathDate  DateTime?
+  deathPlace String?
+  articles   ArticleAuthor[]
+  createdAt  DateTime        @default(now())
+  updatedAt  DateTime        @updatedAt
+}
+
+model Section {
+  id       Int       @id @default(autoincrement())
+  name     String
+  slug     String    @unique
+  articles Article[]
+}
+
+model Keyword {
+  id       Int              @id @default(autoincrement())
+  name     String
+  slug     String           @unique
+  articles ArticleKeyword[]
+}
+
+model ArticleAuthor {
+  articleId Int
+  article   Article @relation(fields: [articleId], references: [id])
+  authorId  Int
+  author    Author  @relation(fields: [authorId], references: [id])
+
+  @@id([articleId, authorId])
+}
+
+model ArticleKeyword {
+  articleId Int
+  article   Article @relation(fields: [articleId], references: [id])
+  keywordId Int
+  keyword   Keyword @relation(fields: [keywordId], references: [id])
+
+  @@id([articleId, keywordId])
+}
