@@ -38,22 +38,28 @@ export default function MagazineForm({ initial }: { initial?: MagazineData }) {
     setError("");
     setSaving(true);
 
-    const url = isEdit ? `/api/revistas/${initial!.id}` : "/api/revistas";
-    const method = isEdit ? "PUT" : "POST";
+    try {
+      const url = isEdit ? `/api/revistas/${initial!.id}` : "/api/revistas";
+      const method = isEdit ? "PUT" : "POST";
 
-    const res = await fetch(url, {
-      method,
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify(form),
-    });
+      const res = await fetch(url, {
+        method,
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(form),
+      });
 
-    if (res.ok) {
-      router.push("/admin/revistas");
-    } else {
+      if (res.ok) {
+        router.push("/admin/revistas");
+        return;
+      }
+
       const data = await res.json();
       setError(data.error || "Error al guardar");
+    } catch {
+      setError("Error de conexión al guardar");
+    } finally {
+      setSaving(false);
     }
-    setSaving(false);
   }
 
   return (

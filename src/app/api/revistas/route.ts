@@ -1,5 +1,4 @@
 import { NextRequest, NextResponse } from "next/server";
-import { auth } from "@/lib/auth";
 import { prisma as db } from "@/lib/db";
 import slugify from "slugify";
 
@@ -14,9 +13,6 @@ export async function GET() {
 }
 
 export async function POST(req: NextRequest) {
-  const session = await auth();
-  if (!session) return NextResponse.json({ error: "No autorizado" }, { status: 401 });
-
   const body = await req.json();
   const { name, description, editorial, logoUrl, foundedYear, country } = body;
 

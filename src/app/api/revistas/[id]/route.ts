@@ -1,5 +1,4 @@
 import { NextRequest, NextResponse } from "next/server";
-import { auth } from "@/lib/auth";
 import { prisma as db } from "@/lib/db";
 import slugify from "slugify";
 
@@ -18,9 +17,6 @@ export async function GET(_req: NextRequest, { params }: RouteContext) {
 }
 
 export async function PUT(req: NextRequest, { params }: RouteContext) {
-  const session = await auth();
-  if (!session) return NextResponse.json({ error: "No autorizado" }, { status: 401 });
-
   const { id } = await params;
   const body = await req.json();
   const { name, description, editorial, logoUrl, foundedYear, country } = body;
@@ -55,9 +51,6 @@ export async function PUT(req: NextRequest, { params }: RouteContext) {
 }
 
 export async function DELETE(_req: NextRequest, { params }: RouteContext) {
-  const session = await auth();
-  if (!session) return NextResponse.json({ error: "No autorizado" }, { status: 401 });
-
   const { id } = await params;
   const magazineId = parseInt(id, 10);
 
