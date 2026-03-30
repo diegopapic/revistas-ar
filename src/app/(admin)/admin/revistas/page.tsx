@@ -21,7 +21,11 @@ export default function AdminRevistasPage() {
   useEffect(() => {
     fetch("/api/revistas")
       .then((r) => r.json())
-      .then(setMagazines)
+      .then((data) => {
+        if (Array.isArray(data)) setMagazines(data);
+        else console.error("API error:", data);
+      })
+      .catch((e) => console.error("Fetch error:", e))
       .finally(() => setLoading(false));
   }, []);
 
