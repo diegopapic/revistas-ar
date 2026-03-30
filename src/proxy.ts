@@ -15,5 +15,11 @@ export default auth((req) => {
 });
 
 export const config = {
-  matcher: ["/admin/:path*", "/api/revistas/:path*", "/api/autores/:path*"],
+  matcher: [
+    "/admin/:path*",
+    "/api/revistas/:path*",
+    "/api/autores/:path*",
+    "/api/secciones/:path*",
+    "/api/keywords/:path*",
+  ],
 };
