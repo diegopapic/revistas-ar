@@ -44,6 +44,9 @@ export default function AdminRevistasPage() {
 
   return (
     <main className="p-6 max-w-5xl mx-auto">
+      <Link href="/admin" className="text-sm text-gray-500 hover:text-gray-800 mb-4 inline-block">
+        ← Volver al panel
+      </Link>
       <div className="flex items-center justify-between mb-6">
         <h1 className="text-2xl font-bold">Revistas</h1>
         <Link
