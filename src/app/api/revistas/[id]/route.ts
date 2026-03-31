@@ -10,7 +10,10 @@ export async function GET(_req: NextRequest, { params }: RouteContext) {
   const { id } = await params;
   const magazine = await getDb().magazine.findUnique({
     where: { id: parseInt(id, 10) },
-    include: { _count: { select: { articles: true, issues: true } } },
+    include: {
+      _count: { select: { articles: true, issues: true } },
+      issues: { orderBy: { number: "asc" }, select: { id: true, number: true, title: true } },
+    },
   });
   if (!magazine) return NextResponse.json({ error: "No encontrada" }, { status: 404 });
   return NextResponse.json(magazine);

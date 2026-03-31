@@ -21,5 +21,6 @@ export const config = {
     "/api/autores/:path*",
     "/api/secciones/:path*",
     "/api/keywords/:path*",
+    "/api/articulos/:path*",
   ],
 };
